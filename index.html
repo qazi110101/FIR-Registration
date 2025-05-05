@@ -1,0 +1,131 @@
+
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIR Form</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Times New Roman', serif;
+      background-color: #000;
+      color: #fff;
+      padding: 40px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #555;
+      font-size: 16px;
+      background-color: #111;
+      color: #fff;
+    }
+    button {
+      padding: 10px 20px;
+      background: #ff0000;
+      color: white;
+      border: none;
+      margin-right: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #firOutput {
+      white-space: pre-wrap;
+      background: #111;
+      padding: 20px;
+      margin-top: 30px;
+      border: 2px solid #ff0000;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      animation: shake 1s ease-in-out infinite alternate;
+      color: #ff4d4d;
+      display: none;
+    }
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      25% { transform: translate(-1px, -2px) rotate(-1deg); }
+      50% { transform: translate(-3px, 0px) rotate(1deg); }
+      75% { transform: translate(1px, 2px) rotate(1deg); }
+      100% { transform: translate(1px, -1px) rotate(-1deg); }
+    }
+    .typewriter {
+      overflow: hidden;
+      white-space: pre-wrap;
+      border-right: 2px solid #fff;
+      animation: typing 3s steps(40, end), blink-caret .75s step-end infinite;
+    }
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: #fff; }
+    }
+    h2, p {
+      text-align: center;
+      color: #ff4d4d;
+    }
+  </style>
+</head>
+<body>
+  <h2>*** POLICE DEPARTMENT - FIR NOTICE ***</h2>
+  <p>Station: City Police Station | District: Lahore</p>  <input type="text" id="name" placeholder="Full Name">
+  <input type="text" id="contact" placeholder="Contact Number">
+  <input type="text" id="mother" placeholder="Mother's Name">
+  <input type="text" id="father" placeholder="Father's Name">
+  <input type="text" id="cnic" placeholder="CNIC Number">
+  <textarea id="address" placeholder="Pickup Address"></textarea><button onclick="generateFIR()">Submit</button> <button onclick="downloadPDF()">Download PDF</button>
+
+  <div id="firOutput" class="typewriter"></div>  <script>
+    let firText = '';
+
+    function generateFIR() {
+      const name = document.getElementById('name').value;
+      const contact = document.getElementById('contact').value;
+      const mother = document.getElementById('mother').value;
+      const father = document.getElementById('father').value;
+      const cnic = document.getElementById('cnic').value;
+      const address = document.getElementById('address').value;
+      const firNo = 'FIR No: ' + Math.floor(100000 + Math.random() * 900000);
+
+      firText = `
+${firNo}
+Date: ${new Date().toLocaleDateString()}
+
+Complainant Details:
+Name: ${name}
+Father's Name: ${father}
+Mother's Name: ${mother}
+Contact Number: ${contact}
+CNIC Number: ${cnic}
+Pickup Address: ${address}
+
+Statement:
+The complainant has appeared in person before the officer-in-charge of the police station and submitted the above details for record and further legal proceedings. This FIR is issued based on the given statement and subject to verification as per law.
+
+Signature of Officer: ____________________
+Date & Time: ${new Date().toLocaleString()}
+
+(Official Stamp Here)`;
+
+      const output = document.getElementById('firOutput');
+      output.style.display = 'block';
+      output.classList.remove("typewriter");
+      void output.offsetWidth; // reset animation
+      output.classList.add("typewriter");
+      output.innerText = firText;
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFont('Times', 'Normal');
+      doc.setFontSize(12);
+      const lines = doc.splitTextToSize(firText, 180);
+      doc.text(lines, 10, 20);
+      doc.save('FIR_Copy.pdf');
+    }
+  </script></body>
+</html>
